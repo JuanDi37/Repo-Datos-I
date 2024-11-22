@@ -1,0 +1,33 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: miprestamosadb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - miprestamosa_network
+
+  backend:
+    image: tiangolo/uvicorn-gunicorn-fastapi:python3.9
+    container_name: backend_container
+    volumes:
+      - ../backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - miprestamosa_network
+
+volumes:
+  postgres_data:
+
+networks:
+  miprestamosa_network:
